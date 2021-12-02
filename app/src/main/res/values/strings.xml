@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">CPSC312 Project</string>
+    <string name="point">Points: </string>
+    <string name="time">Time: </string>
+    <string name="playText">Press PLAY to Start</string>
+    <string name="play">PLAY</string>
+    <string name="clear">CLEAR</string>
+    <string name="submit">SUBMIT</string>
+</resources>
