@@ -1,9 +1,23 @@
 <resources>
     <string name="app_name">CPSC312 Project</string>
+
+    <string name="boggle_online">Boggle Online</string>
+    <string name="single_player">Single Player</string>
+    <string name="multiplayer">Multiplayer</string>
+
     <string name="point">Points: </string>
     <string name="time">Time: </string>
     <string name="playText">Press PLAY to Start</string>
     <string name="play">PLAY</string>
     <string name="clear">CLEAR</string>
     <string name="submit">SUBMIT</string>
+
+    <string name="num_players">Players: ?/4</string>
+    <string name="join">Join</string>
+    <string name="code">CODE: XXXX</string>
+    <string name="user_1">User 1</string>
+    <string name="user_2">User 2</string>
+    <string name="user_3">User 3</string>
+    <string name="user_4">User 4</string>
+    <string name="start">Start</string>
 </resources>

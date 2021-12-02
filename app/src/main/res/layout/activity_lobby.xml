@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".JoinScreen">
+    tools:context=".LobbyActivity">
 
     <TextView
-        android:id="@+id/NumPlayers"
+        android:id="@+id/numPlayersTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:text="Players: 1/4"
+        android:text="@string/num_players"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -22,83 +23,82 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:text="JOIN"
+        android:text="@string/join"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/codeText"
-        android:layout_width="0dp"
-        android:layout_height="74dp"
-        android:layout_marginTop="100dp"
-        android:text="CODE: XXXX"
+        android:id="@+id/codeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
+        android:text="@string/code"
         android:textAlignment="center"
         android:textSize="34sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.425"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/player1Text"
+        android:id="@+id/user1TextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="60dp"
-        android:text="Player 1"
+        android:text="@string/user_1"
         android:textAlignment="center"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/player2Text"
+        app:layout_constraintBottom_toTopOf="@+id/user2TextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/codeText" />
+        app:layout_constraintTop_toBottomOf="@+id/codeTextView" />
 
     <TextView
-        android:id="@+id/player3Text"
+        android:id="@+id/user3TextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Player 3"
+        android:text="@string/user_3"
         android:textAlignment="center"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/player4Text"
-        app:layout_constraintEnd_toEndOf="@+id/player2Text"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/player2Text"
-        app:layout_constraintTop_toBottomOf="@+id/player2Text" />
+        app:layout_constraintBottom_toTopOf="@+id/user4TextView"
+        app:layout_constraintEnd_toEndOf="@+id/user2TextView"
+        app:layout_constraintStart_toStartOf="@+id/user2TextView"
+        app:layout_constraintTop_toBottomOf="@+id/user2TextView" />
 
     <TextView
-        android:id="@+id/player2Text"
+        android:id="@+id/user2TextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Player 2"
+        android:text="@string/user_2"
         android:textAlignment="center"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/player3Text"
-        app:layout_constraintEnd_toEndOf="@+id/player1Text"
-        app:layout_constraintStart_toStartOf="@+id/player1Text"
-        app:layout_constraintTop_toBottomOf="@+id/player1Text" />
+        app:layout_constraintBottom_toTopOf="@+id/user3TextView"
+        app:layout_constraintEnd_toEndOf="@+id/user1TextView"
+        app:layout_constraintStart_toStartOf="@+id/user1TextView"
+        app:layout_constraintTop_toBottomOf="@+id/user1TextView" />
 
     <TextView
-        android:id="@+id/player4Text"
+        android:id="@+id/user4TextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="92dp"
-        android:text="Player 4"
+        android:text="@string/user_4"
         android:textAlignment="center"
         android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/startButton"
-        app:layout_constraintEnd_toEndOf="@+id/player3Text"
-        app:layout_constraintStart_toStartOf="@+id/player3Text"
-        app:layout_constraintTop_toBottomOf="@+id/player3Text" />
+        app:layout_constraintEnd_toEndOf="@+id/user3TextView"
+        app:layout_constraintStart_toStartOf="@+id/user3TextView"
+        app:layout_constraintTop_toBottomOf="@+id/user3TextView" />
 
     <Button
         android:id="@+id/startButton"
-        android:layout_width="224dp"
-        android:layout_height="87dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="30dp"
-        android:text="START"
+        android:text="@string/start"
         android:textAlignment="center"
+        android:textSize="34sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/player4Text"
-        app:layout_constraintStart_toStartOf="@+id/player4Text" />
+        app:layout_constraintEnd_toEndOf="@+id/user4TextView"
+        app:layout_constraintStart_toStartOf="@+id/user4TextView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
