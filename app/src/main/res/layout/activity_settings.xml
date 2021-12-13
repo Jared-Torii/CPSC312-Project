@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,69 +8,75 @@
     tools:context=".SettingsActivity">
 
     <TextView
-        android:id="@+id/settingsTitle"
-        android:layout_width="266dp"
-        android:layout_height="77dp"
-        android:layout_marginTop="68dp"
-        android:text="SETTINGS"
+        android:id="@+id/settingsTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="70dp"
+        android:text="@string/settings"
         android:textAlignment="center"
         android:textSize="48sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/nameText"
-        android:layout_width="125dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="76dp"
-        android:text="Name: "
-        android:textAlignment="center"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toStartOf="@+id/nameLine"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="270dp" />
-
-    <EditText
-        android:id="@+id/nameLine"
-        android:layout_width="150dp"
-        android:layout_height="46dp"
-        android:layout_marginEnd="124dp"
-        android:hint="Enter Name"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/nameText"
-        tools:layout_editor_absoluteY="264dp" />
-
-    <TextView
-        android:id="@+id/gametimeText"
+        android:id="@+id/nameTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="48dp"
-        android:layout_marginTop="108dp"
-        android:text="Game Time: "
+        android:text="@string/name"
         android:textAlignment="center"
         android:textSize="24sp"
-        app:layout_constraintEnd_toStartOf="@+id/gametimeLine"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nameText" />
+        app:layout_constraintBottom_toTopOf="@+id/gameTimeTextView"
+        app:layout_constraintStart_toStartOf="@+id/gameTimeTextView"
+        app:layout_constraintTop_toBottomOf="@+id/settingsTextView" />
 
     <EditText
-        android:id="@+id/gametimeLine"
-        android:layout_width="122dp"
-        android:layout_height="51dp"
-        android:layout_marginEnd="107dp"
-        android:hint="Enter Time"
+        android:id="@+id/nameEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="@string/enter_name"
+        android:importantForAutofill="no"
+        android:inputType="text"
+        android:maxLength="10"
+        app:layout_constraintBottom_toTopOf="@+id/timeEditText"
+        app:layout_constraintEnd_toEndOf="@+id/timeEditText"
+        app:layout_constraintTop_toBottomOf="@+id/settingsTextView"
+        tools:ignore="TouchTargetSizeCheck,TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/gameTimeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/game_time"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/saveButton"
+        app:layout_constraintEnd_toStartOf="@+id/timeEditText"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nameTextView" />
+
+    <EditText
+        android:id="@+id/timeEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="@string/enter_time"
+        android:importantForAutofill="no"
+        android:inputType="number"
+        android:maxLength="3"
+        app:layout_constraintBottom_toTopOf="@+id/saveButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/gametimeText"
-        tools:layout_editor_absoluteY="405dp" />
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/gameTimeTextView"
+        app:layout_constraintTop_toBottomOf="@+id/nameEditText"
+        tools:ignore="TouchTargetSizeCheck,TextContrastCheck" />
 
     <Button
         android:id="@+id/saveButton"
-        android:layout_width="163dp"
-        android:layout_height="54dp"
-        android:layout_marginBottom="74dp"
-        android:text="SAVE"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="70dp"
+        android:text="@string/save"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
