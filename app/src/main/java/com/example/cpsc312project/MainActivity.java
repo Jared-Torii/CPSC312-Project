@@ -28,8 +28,8 @@ public class MainActivity extends AppCompatActivity {
         singlePlayerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO: IMPLEMENT SINGLE PLAYER FUNCTIONALITY
-
+                Intent intent = new Intent(MainActivity.this, SinglePlayerBoggleActivity.class);
+                startActivity(intent);
             }
         });
 

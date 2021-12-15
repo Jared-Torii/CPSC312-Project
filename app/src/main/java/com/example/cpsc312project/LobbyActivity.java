@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -41,6 +42,8 @@ public class LobbyActivity extends AppCompatActivity {
     Game game;
     boolean isHost;
     String lobbyCode;
+    Boggle boggle;
+    List<String> sharedGrid;
 
     SharedPreferences sharedPreferences;
     Random rand;
@@ -73,11 +76,12 @@ public class LobbyActivity extends AppCompatActivity {
         Intent intent = getIntent();
         isHost = intent.getBooleanExtra("isHost", false);
 
-        if (isHost) {
+        if (isHost) { //For first user in lobby
 
             lobbyCode = String.format("%04d", rand.nextInt(10000));
 
-            game = new Game(lobbyCode, currUser, null, 1, currUser.getTimeSetting());
+            game = new Game(lobbyCode, currUser, null, 1, currUser.getTimeSetting(),
+                    null, null, null);
 
             db.collection("games").document(game.getLobbyCode())
                     .set(game);
@@ -91,13 +95,14 @@ public class LobbyActivity extends AppCompatActivity {
             startButton.setEnabled(false);
 
             db.collection("games").document(game.getLobbyCode())
-                    .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                    .addSnapshotListener(LobbyActivity.this, new EventListener<DocumentSnapshot>() {
                         @Override
                         public void onEvent(@Nullable DocumentSnapshot snapshot,
                                             @Nullable FirebaseFirestoreException e) {
                             if (snapshot != null && snapshot.exists()) {
                                 game = snapshot.toObject(Game.class);
-                                if (game.getSecondUser() != null) {
+
+                                if (game.getSecondUser() != null) { //Listen for a second user joining
                                     numPlayersTextView.setText("Players: " + game.getNumUsers() + "/2");
                                     user2TextView.setText(game.getSecondUser().getUsername());
                                     user2TextView.setVisibility(View.VISIBLE);
@@ -105,11 +110,12 @@ public class LobbyActivity extends AppCompatActivity {
                                         startButton.setEnabled(true);
                                     }
                                 }
+
                             }
                         }
                     });
 
-        } else {
+        } else { //For second user in lobby
 
             lobbyCode = intent.getStringExtra("lobbyCode");
             currUser.setUsername(intent.getStringExtra("savedName")); //in case of randomly generated username
@@ -137,6 +143,27 @@ public class LobbyActivity extends AppCompatActivity {
                         }
                     });
 
+            db.collection("games").document(lobbyCode)
+                    .addSnapshotListener(LobbyActivity.this, new EventListener<DocumentSnapshot>() {
+                        @Override
+                        public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                            @Nullable FirebaseFirestoreException e) {
+                            if (snapshot != null & snapshot.exists()) {
+                                game = snapshot.toObject(Game.class);
+
+                                if (game.getSharedGrid() != null) { //Listen for game starting
+                                    Intent secondUserBoggleIntent = new Intent(LobbyActivity.this,
+                                            MultiplayerBoggleActivity.class);
+                                    secondUserBoggleIntent.putExtra("lobbyCode", game.getLobbyCode());
+                                    secondUserBoggleIntent.putExtra("userNum", 2);
+                                    startActivity(secondUserBoggleIntent);
+                                    LobbyActivity.this.finish();
+                                }
+
+                            }
+                        }
+                    });
+
         }
 
         joinButton.setOnClickListener(new View.OnClickListener() {
@@ -146,6 +173,37 @@ public class LobbyActivity extends AppCompatActivity {
                 //for preserving randomly generated username in case of no shared pref name setting
                 joinIntent.putExtra("savedName", currUserNameSetting);
                 startActivity(joinIntent);
+            }
+        });
+
+        startButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boggle = new Boggle(getApplicationContext());
+                boggle.setUpGrid();
+
+                sharedGrid = new ArrayList<>();
+                for (int i = 0; i < 4; i++) {
+                    for (int j = 0; j < 4; j++) {
+                        sharedGrid.add(boggle.getGrid()[i][j]);
+                    }
+                }
+
+                game.setSharedGrid(sharedGrid);
+
+                db.collection("games").document(game.getLobbyCode())
+                        .set(game)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                Intent boggleIntent = new Intent(LobbyActivity.this,
+                                        MultiplayerBoggleActivity.class);
+                                boggleIntent.putExtra("lobbyCode", game.getLobbyCode());
+                                boggleIntent.putExtra("userNum", 1);
+                                startActivity(boggleIntent);
+                                LobbyActivity.this.finish();
+                            }
+                        });
             }
         });
 

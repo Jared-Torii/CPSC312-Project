@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CPSC312Project">
         <activity
+            android:name=".MultiplayerBoggleActivity"
+            android:exported="true" />
+        <activity
             android:name=".JoinActivity"
             android:exported="true" />
         <activity
@@ -19,7 +22,7 @@
             android:name=".LobbyActivity"
             android:exported="false" />
         <activity
-            android:name=".BoggleActivity"
+            android:name=".SinglePlayerBoggleActivity"
             android:exported="false" />
         <activity
             android:name=".ScoreActivity"

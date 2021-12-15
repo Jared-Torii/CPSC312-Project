@@ -52,6 +52,7 @@ public class JoinActivity extends AppCompatActivity {
                                         lobbyIntent.putExtra("lobbyCode", enteredCode);
                                         lobbyIntent.putExtra("savedName", getIntent().getStringExtra("savedName"));
                                         startActivity(lobbyIntent);
+                                        JoinActivity.this.finish();
                                     }
                                 }
                             }
