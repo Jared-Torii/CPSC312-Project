@@ -12,6 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="80dp"
+        android:fontFamily="casual"
         android:text="@string/boggle_online"
         android:textAlignment="center"
         android:textSize="60sp"
@@ -23,6 +24,7 @@
         android:id="@+id/singlePlayerButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="casual"
         android:text="@string/single_player"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/multiplayerButton"
@@ -36,6 +38,7 @@
         android:id="@+id/multiplayerButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="casual"
         android:text="@string/multiplayer"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -49,5 +52,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="205dp" />
+        app:layout_constraintGuide_percent="0.45" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,19 +1,13 @@
 package com.example.cpsc312project;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -25,7 +19,6 @@ public class MultiplayerBoggleActivity extends AppCompatActivity {
     FirebaseFirestore db;
     Game game;
 
-//    ActivityResultLauncher<Intent> launcher;
     Intent intent;
     Intent scoreIntent;
     String lobbyCode;
@@ -33,7 +26,6 @@ public class MultiplayerBoggleActivity extends AppCompatActivity {
 
     Runnable runnable;
     Handler handler = null;
-    SharedPreferences sharedPreferences;
     int seconds;
 
     Boggle boggle;
@@ -68,14 +60,6 @@ public class MultiplayerBoggleActivity extends AppCompatActivity {
         setContentView(R.layout.activity_multiplayer_boggle);
 
         getSupportActionBar().setTitle("Multiplayer Boggle Game");
-
-//        launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-//                new ActivityResultCallback<ActivityResult>() {
-//                    @Override
-//                    public void onActivityResult(ActivityResult result) {
-//                        //TODO: FINISH THIS
-//                    }
-//                });
 
         db = FirebaseFirestore.getInstance();
 

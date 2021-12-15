@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, LobbyActivity.class);
                 intent.putExtra("isHost", true);
                 startActivity(intent);
+                finish();
             }
         });
 

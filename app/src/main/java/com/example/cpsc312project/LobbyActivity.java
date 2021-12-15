@@ -8,9 +8,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -55,6 +57,8 @@ public class LobbyActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lobby);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         numPlayersTextView = findViewById(R.id.numPlayersTextView);
         lobbyTimeTextView = findViewById(R.id.lobbyTimeTextView);
         joinButton = findViewById(R.id.joinButton);
@@ -68,7 +72,8 @@ public class LobbyActivity extends AppCompatActivity {
         rand = new Random();
 
         sharedPreferences = getSharedPreferences("usersettings", 0);
-        currUserNameSetting = sharedPreferences.getString("nameSetting", "user" + String.format("%03d", rand.nextInt(1000)));
+        currUserNameSetting = sharedPreferences.getString("nameSetting", "user" + String.format("%03d",
+                rand.nextInt(1000)));
         currUserTimeSetting = sharedPreferences.getInt("timeSetting", 90);
 
         currUser = new User(currUserNameSetting, currUserTimeSetting);
@@ -78,7 +83,9 @@ public class LobbyActivity extends AppCompatActivity {
 
         if (isHost) { //For first user in lobby
 
-            lobbyCode = String.format("%04d", rand.nextInt(10000));
+            getSupportActionBar().setTitle("My Lobby");
+
+            lobbyCode = String.format("%05d", rand.nextInt(100000));
 
             game = new Game(lobbyCode, currUser, null, 1, currUser.getTimeSetting(),
                     null, null, null);
@@ -103,6 +110,7 @@ public class LobbyActivity extends AppCompatActivity {
                                 game = snapshot.toObject(Game.class);
 
                                 if (game.getSecondUser() != null) { //Listen for a second user joining
+                                    joinButton.setVisibility(View.INVISIBLE);
                                     numPlayersTextView.setText("Players: " + game.getNumUsers() + "/2");
                                     user2TextView.setText(game.getSecondUser().getUsername());
                                     user2TextView.setVisibility(View.VISIBLE);
@@ -111,11 +119,23 @@ public class LobbyActivity extends AppCompatActivity {
                                     }
                                 }
 
+                                else if (game.getSecondUser() == null) { //Listen for second user leaving
+                                    joinButton.setVisibility(View.VISIBLE);
+                                    numPlayersTextView.setText("Players: " + game.getNumUsers() + "/2");
+                                    user2TextView.setVisibility(View.INVISIBLE);
+                                    startButton.setEnabled(false);
+                                }
+
                             }
                         }
                     });
 
         } else { //For second user in lobby
+
+            joinButton.setVisibility(View.INVISIBLE);
+
+            Toast.makeText(getApplicationContext(), "Successfully joined game!", Toast.LENGTH_SHORT)
+                    .show();
 
             lobbyCode = intent.getStringExtra("lobbyCode");
             currUser.setUsername(intent.getStringExtra("savedName")); //in case of randomly generated username
@@ -140,6 +160,9 @@ public class LobbyActivity extends AppCompatActivity {
                             user2TextView.setText(game.getSecondUser().getUsername());
 
                             startButton.setVisibility(View.INVISIBLE);
+
+                            getSupportActionBar().setTitle(game.getFirstUser().getUsername() +
+                                    "\'s Lobby");
                         }
                     });
 
@@ -160,6 +183,23 @@ public class LobbyActivity extends AppCompatActivity {
                                     LobbyActivity.this.finish();
                                 }
 
+                                else if (game.getFirstUser() == null) { //Listen for first user leaving
+                                    db.collection("games").document(lobbyCode)
+                                            .delete()
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void unused) {
+                                                    Toast.makeText(getApplicationContext(),
+                                                            "Host cancelled the game...",
+                                                            Toast.LENGTH_SHORT).show();
+                                                    Intent mainScreenIntent = new Intent(LobbyActivity.this,
+                                                            MainActivity.class);
+                                                    startActivity(mainScreenIntent);
+                                                    LobbyActivity.this.finish();
+                                                }
+                                            });
+                                }
+
                             }
                         }
                     });
@@ -169,10 +209,18 @@ public class LobbyActivity extends AppCompatActivity {
         joinButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent joinIntent = new Intent(LobbyActivity.this, JoinActivity.class);
-                //for preserving randomly generated username in case of no shared pref name setting
-                joinIntent.putExtra("savedName", currUserNameSetting);
-                startActivity(joinIntent);
+                db.collection("games").document(lobbyCode)
+                        .delete()
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                Intent joinIntent = new Intent(LobbyActivity.this, JoinActivity.class);
+                                //for preserving randomly generated username in case of no shared pref name setting
+                                joinIntent.putExtra("savedName", currUserNameSetting);
+                                startActivity(joinIntent);
+                                finish();
+                            }
+                        });
             }
         });
 
@@ -207,6 +255,64 @@ public class LobbyActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                db.collection("games").document(lobbyCode)
+                        .get()
+                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                game = documentSnapshot.toObject(Game.class);
+                                if (game.getNumUsers() == 1) {
+                                    db.collection("games").document(lobbyCode)
+                                            .delete()
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void unused) {
+                                                    Intent mainScreenIntent = new Intent(LobbyActivity.this,
+                                                            MainActivity.class);
+                                                    startActivity(mainScreenIntent);
+                                                    LobbyActivity.this.finish();
+                                                }
+                                            });
+                                } else {
+                                    if (isHost) {
+                                        db.collection("games").document(lobbyCode)
+                                                .update("firstUser", null,
+                                                        "numUsers", 1)
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void unused) {
+                                                        Intent mainScreenIntent = new Intent(LobbyActivity.this,
+                                                                MainActivity.class);
+                                                        startActivity(mainScreenIntent);
+                                                        LobbyActivity.this.finish();
+                                                    }
+                                                });
+                                    } else {
+                                        db.collection("games").document(lobbyCode)
+                                                .update("secondUser", null,
+                                                        "numUsers", 1)
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void unused) {
+                                                        Intent mainScreenIntent = new Intent(LobbyActivity.this,
+                                                                MainActivity.class);
+                                                        startActivity(mainScreenIntent);
+                                                        LobbyActivity.this.finish();
+                                                    }
+                                                });
+                                    }
+                                }
+                            }
+                        });
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

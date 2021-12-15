@@ -15,7 +15,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -55,6 +57,8 @@ public class ScoreActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_score);
+
+        getSupportActionBar().setTitle("Results");
 
         db = FirebaseFirestore.getInstance();
 
@@ -102,8 +106,11 @@ public class ScoreActivity extends AppCompatActivity {
                                         public void onEvent(@Nullable DocumentSnapshot snapshot,
                                                             @Nullable FirebaseFirestoreException e) {
                                             finishedGame = snapshot.toObject(Game.class);
-                                            if (finishedGame.getFirstUserWords() != null && finishedGame.getSecondUserWords() != null)
-                                                prepareScoreScreen(finishedGame);
+                                            if (finishedGame != null) {
+                                                if (finishedGame.getFirstUserWords() != null &&
+                                                        finishedGame.getSecondUserWords() != null)
+                                                    prepareScoreScreen(finishedGame);
+                                            }
                                         }
                                     });
                         }
@@ -113,9 +120,16 @@ public class ScoreActivity extends AppCompatActivity {
         returnButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent mainScreenIntent = new Intent(ScoreActivity.this, MainActivity.class);
-                startActivity(mainScreenIntent);
-                ScoreActivity.this.finish();
+                db.collection("games").document(lobbyCode)
+                        .delete()
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Intent mainScreenIntent = new Intent(ScoreActivity.this, MainActivity.class);
+                                startActivity(mainScreenIntent);
+                                ScoreActivity.this.finish();
+                            }
+                        });
             }
         });
 
@@ -155,8 +169,10 @@ public class ScoreActivity extends AppCompatActivity {
 
         if (firstUserPoints > secondUserPoints)
             winnerTextView.setText(game.getFirstUser().getUsername() + " wins!");
-        else
+        else if (secondUserPoints > firstUserPoints)
             winnerTextView.setText(game.getSecondUser().getUsername() + " wins!");
+        else
+            winnerTextView.setText("It's a tie!");
 
         scoreTextView.setVisibility(View.VISIBLE);
         firstUserNameTextView.setVisibility(View.VISIBLE);

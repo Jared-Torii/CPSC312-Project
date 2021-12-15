@@ -1,9 +1,11 @@
 package com.example.cpsc312project;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,6 +29,9 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Settings");
+
         nameEditText = findViewById(R.id.nameEditText);
         timeEditText = findViewById(R.id.timeEditText);
         saveButton = findViewById(R.id.saveButton);
@@ -35,16 +40,21 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (nameEditText.getText().toString().length() > 0
-                && timeEditText.getText().toString().length() > 0) {
+                || timeEditText.getText().toString().length() > 0) {
                     nameSetting = nameEditText.getText().toString();
-                    timeSetting = Integer.parseInt(timeEditText.getText().toString());
+                    if (timeEditText.getText().toString().length() > 0)
+                        timeSetting = Integer.parseInt(timeEditText.getText().toString());
 
                     sharedPreferences = getSharedPreferences("usersettings", 0);
                     editor = sharedPreferences.edit();
 
-                    editor.putString("nameSetting", nameSetting);
-                    editor.putInt("timeSetting", timeSetting);
+                    if (nameEditText.getText().toString().length() > 0)
+                        editor.putString("nameSetting", nameSetting);
+                    if (timeEditText.getText().toString().length() > 0)
+                        editor.putInt("timeSetting", timeSetting);
                     editor.apply();
+                    Toast.makeText(getApplicationContext(), "Settings saved!",
+                            Toast.LENGTH_SHORT).show();
                     finish();
                 } else {
                     Toast.makeText(getApplicationContext(), "Must enter a value!",
@@ -54,4 +64,15 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
     }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }

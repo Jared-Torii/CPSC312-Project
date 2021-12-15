@@ -8,7 +8,12 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
+    <!--Updated theme-->
+    <color name="primary_blue">#1E34AC</color>
+    <color name="primary_variant_blue">#0C1963</color>
+    <color name="background_color">#E3F7FD</color>
+
     <!--For shared words-->
-    <color name="red">#AC1616</color>
+    <color name="red">#D30C0C</color>
 
 </resources>

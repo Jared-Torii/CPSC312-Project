@@ -5,9 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -22,12 +24,16 @@ public class JoinActivity extends AppCompatActivity {
     String enteredCode;
 
     FirebaseFirestore db;
+    Game foundGame;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_join);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Join a Game");
 
         codeEditText = findViewById(R.id.codeEditText);
         joinLobbyButton = findViewById(R.id.joinLobbyButton);
@@ -47,12 +53,21 @@ public class JoinActivity extends AppCompatActivity {
                                 if (task.isSuccessful()) {
                                     DocumentSnapshot document = task.getResult();
                                     if (document.exists()) {
-                                        Intent lobbyIntent = new Intent(JoinActivity.this, LobbyActivity.class);
-                                        lobbyIntent.putExtra("isHost", false);
-                                        lobbyIntent.putExtra("lobbyCode", enteredCode);
-                                        lobbyIntent.putExtra("savedName", getIntent().getStringExtra("savedName"));
-                                        startActivity(lobbyIntent);
-                                        JoinActivity.this.finish();
+                                        foundGame = document.toObject(Game.class);
+                                        if (foundGame.getNumUsers() == 1) {
+                                            Intent lobbyIntent = new Intent(JoinActivity.this, LobbyActivity.class);
+                                            lobbyIntent.putExtra("isHost", false);
+                                            lobbyIntent.putExtra("lobbyCode", enteredCode);
+                                            lobbyIntent.putExtra("savedName", getIntent().getStringExtra("savedName"));
+                                            startActivity(lobbyIntent);
+                                            JoinActivity.this.finish();
+                                        } else {
+                                            Toast.makeText(getApplicationContext(), "Sorry, that game is full...",
+                                                    Toast.LENGTH_SHORT).show();
+                                        }
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), "Game not found...",
+                                                Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             }
@@ -61,4 +76,17 @@ public class JoinActivity extends AppCompatActivity {
         });
 
     }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Intent mainScreenIntent = new Intent(JoinActivity.this, MainActivity.class);
+                startActivity(mainScreenIntent);
+                this.finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }
